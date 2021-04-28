@@ -5,6 +5,7 @@ plugins {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 group = "com.gradle.project"
@@ -16,10 +17,12 @@ val apacheCommonsVersion = "3.12.0"
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.apache.commons:commons-lang3:$apacheCommonsVersion")
 }
 
 tasks.withType<Jar> {
     manifest {
         attributes("Main-Class" to "${project.group}.$mainClassName")
     }
+    from(configurations.compileClasspath.map { config -> config.map { if (it.isDirectory) it else zipTree(it) } })
 }
